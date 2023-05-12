@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Windows;
 using TaikoBarlineHelper.Settings;
+using System.Diagnostics;
 
 namespace TaikoBarlineHelper
 {
@@ -11,7 +12,7 @@ namespace TaikoBarlineHelper
         {
             try
             {
-                XmlTextReader reader = new XmlTextReader("https://raw.githubusercontent.com/Iojioji/Taiko-SV-Viewer/main/AutoUpdater.xml");
+                XmlTextReader reader = new XmlTextReader(Properties.Settings.Default.UpdateXML);
                 bool nextIsVersion = false;
                 string version = "";
                 while (reader.Read())
@@ -23,11 +24,11 @@ namespace TaikoBarlineHelper
                     }
                     if (reader.NodeType == XmlNodeType.Element && reader.Name == "version")
                     {
-                        Console.WriteLine("Hijuesu el siguiente es el bueno");
+                        //Debug.WriteLine("Hijuesu el siguiente es el bueno");
                         nextIsVersion = true;
                     }
                 }
-                Console.WriteLine($"Latest version is '{version}', current is '{SettingsManager.Version}'");
+                Debug.WriteLine($"Latest version is '{version}', current is '{SettingsManager.Version}'");
 
                 return IsVersionNewer(SettingsManager.Version, version);
             }
@@ -39,7 +40,7 @@ namespace TaikoBarlineHelper
         }
         static bool IsVersionNewer(string currentVersion, string newVersion)
         {
-            Console.WriteLine($"Current Version: {currentVersion}, New Version: {newVersion}");
+            Debug.WriteLine($"Current Version: {currentVersion}, New Version: {newVersion}");
             string[] currentVer = currentVersion.Split('.');
             string[] newVer = newVersion.Split('.');
 

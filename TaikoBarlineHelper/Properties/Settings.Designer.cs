@@ -27,9 +27,21 @@ namespace TaikoBarlineHelper.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/Iojioji/TaikoBarlineHelper/main/AutoUpdater.xml" +
             "")]
-        public string UpdateURL {
+        public string UpdateXML {
             get {
-                return ((string)(this["UpdateURL"]));
+                return ((string)(this["UpdateXML"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LoadedMap {
+            get {
+                return ((string)(this["LoadedMap"]));
+            }
+            set {
+                this["LoadedMap"] = value;
             }
         }
     }
