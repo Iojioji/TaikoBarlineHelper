@@ -568,8 +568,6 @@
             // 
             // DonFinisherNoteEnabled
             // 
-            DonFinisherNoteEnabled.Checked = true;
-            DonFinisherNoteEnabled.CheckState = CheckState.Checked;
             DonFinisherNoteEnabled.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             DonFinisherNoteEnabled.Location = new Point(3, 2);
             DonFinisherNoteEnabled.Name = "DonFinisherNoteEnabled";
@@ -681,8 +679,6 @@
             // 
             // KatFinisherNoteEnabled
             // 
-            KatFinisherNoteEnabled.Checked = true;
-            KatFinisherNoteEnabled.CheckState = CheckState.Checked;
             KatFinisherNoteEnabled.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             KatFinisherNoteEnabled.Location = new Point(3, 2);
             KatFinisherNoteEnabled.Name = "KatFinisherNoteEnabled";

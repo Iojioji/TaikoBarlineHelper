@@ -78,8 +78,8 @@ namespace TaikoBarlineHelper
             //TODO: Load this from settings, along with the values lmao
             ApplyDon = true;
             ApplyKat = true;
-            ApplyDonFinisher = true;
-            ApplyKatFinisher = true;
+            ApplyDonFinisher = false;
+            ApplyKatFinisher = false;
 
             UpdateMakeBarlineButt();
         }
