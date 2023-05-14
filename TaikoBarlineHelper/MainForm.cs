@@ -40,7 +40,7 @@ namespace TaikoBarlineHelper
             set
             {
                 _applyKat = value;
-                UpdateBarlinePanelStatus(DonNoteBarlinePanel, _applyKat);
+                UpdateBarlinePanelStatus(KatNoteBarlinePanel, _applyKat);
             }
         }
         bool ApplyDonFinisher
@@ -49,7 +49,7 @@ namespace TaikoBarlineHelper
             set
             {
                 _applyDonFinisher = value;
-                UpdateBarlinePanelStatus(DonNoteBarlinePanel, _applyDonFinisher);
+                UpdateBarlinePanelStatus(DonFinisherNoteBarlinePanel, _applyDonFinisher);
             }
         }
         bool ApplyKatFinisher
@@ -58,7 +58,7 @@ namespace TaikoBarlineHelper
             set
             {
                 _applyKatFinisher = value;
-                UpdateBarlinePanelStatus(DonNoteBarlinePanel, _applyKatFinisher);
+                UpdateBarlinePanelStatus(KatFinisherNoteBarlinePanel, _applyKatFinisher);
             }
         }
 
@@ -80,6 +80,8 @@ namespace TaikoBarlineHelper
             ApplyKat = true;
             ApplyDonFinisher = true;
             ApplyKatFinisher = true;
+
+            UpdateMakeBarlineButt();
         }
 
         private void ParseBeatmap(string fileName)
@@ -228,25 +230,26 @@ namespace TaikoBarlineHelper
             {
                 GenerateBarline(originalOffset, 10000, 10, origin.TimeSignature, origin.SampleSet, origin.CustomSampleSet, origin.Volume, isKiai, true);
             }
-            //GenerateBarline(originalOffset - 1, bpm, svValue, origin.TimeSignature, origin.SampleSet, origin.CustomSampleSet, origin.Volume, isKiai, false);
-            //GenerateBarline(originalOffset + 1, bpm, svValue, origin.TimeSignature, origin.SampleSet, origin.CustomSampleSet, origin.Volume, isKiai, false);
 
             if (note.IsBig)
             {
                 if (note.Color == TaikoColor.Blue)
                 {
-                    GenerateBarlines(origin, bpm, isKiai, 6, 2, 0.0125);
+                    //GenerateBarlines(origin, bpm, isKiai, 6, 2, 0.0125);
+                    GenerateBarlines(origin, bpm, isKiai, (int)KatFinisherNoteBarlineAmount.Value, (int)KatFinisherNoteBarlineSpacing.Value, (double)KatFinisherNoteBarlineSVIncrease.Value);
                 }
                 else
                 {
-                    GenerateBarlines(origin, bpm, isKiai, 10, 3, 0.06);
+                    //GenerateBarlines(origin, bpm, isKiai, 10, 3, 0.06);
+                    GenerateBarlines(origin, bpm, isKiai, (int)DonFinisherNoteBarlineAmount.Value, (int)DonFinisherNoteBarlineSpacing.Value, (double)DonFinisherNoteBarlineSVIncrease.Value);
                 }
             }
             else
             {
                 if (note.Color == TaikoColor.Blue)
                 {
-                    GenerateBarlines(origin, bpm, isKiai, 4, 3, 0);
+                    //GenerateBarlines(origin, bpm, isKiai, 4, 3, 0);
+                    GenerateBarlines(origin, bpm, isKiai, (int)KatNoteBarlineAmount.Value, (int)KatNoteBarlineSpacing.Value, (double)KatNoteBarlineSVIncrease.Value);
                 }
                 else
                 {
@@ -378,6 +381,19 @@ namespace TaikoBarlineHelper
         {
             toChange.Enabled = enabled;
         }
+        void UpdateMakeBarlineButt()
+        {
+            bool enabled = true;
+            if (_loadedBeatmap == null)
+            {
+                enabled = false;
+            }
+            if (string.IsNullOrEmpty(TimingPointTextBox.Text) || string.IsNullOrWhiteSpace(TimingPointTextBox.Text))
+            {
+                enabled = false;
+            }
+            MakeBarlineButt.Enabled = enabled;
+        }
 
         #region Events
         private void LoadBeatmapStripButt_Click(object sender, EventArgs e)
@@ -462,12 +478,31 @@ namespace TaikoBarlineHelper
                 OopsButt.Enabled = false;
             }
         }
-
-        private void DonNoteEnabled_CheckedChanged(object sender, EventArgs e)
+        private void NoteEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            bool isChecked = ((CheckBox)sender).Checked;
+            CheckBox checkbox = (CheckBox)sender;
+            string name = checkbox.Name;
+            bool isChecked = checkbox.Checked;
 
-            ApplyDon = isChecked;
+            switch (name)
+            {
+                case ("DonNoteEnabled"):
+                    ApplyDon = isChecked;
+                    break;
+                case ("KatNoteEnabled"):
+                    ApplyKat = isChecked;
+                    break;
+                case ("DonFinisherNoteEnabled"):
+                    ApplyDonFinisher = isChecked;
+                    break;
+                case ("KatFinisherNoteEnabled"):
+                    ApplyKatFinisher = isChecked;
+                    break;
+            }
+        }
+        private void TimingPointTextBox_TextChanged(object sender, EventArgs e)
+        {
+            UpdateMakeBarlineButt();
         }
         #endregion
 
