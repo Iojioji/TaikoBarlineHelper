@@ -129,7 +129,7 @@
             // LoadBeatmapStripButt
             // 
             LoadBeatmapStripButt.Name = "LoadBeatmapStripButt";
-            LoadBeatmapStripButt.Size = new Size(180, 22);
+            LoadBeatmapStripButt.Size = new Size(150, 22);
             LoadBeatmapStripButt.Text = "Load Beatmap";
             LoadBeatmapStripButt.Click += LoadBeatmapStripButt_Click;
             // 
@@ -344,7 +344,7 @@
             DonNoteGimmickType.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
             DonNoteGimmickType.FormattingEnabled = true;
             DonNoteGimmickType.ItemHeight = 11;
-            DonNoteGimmickType.Items.AddRange(new object[] { "Barline", "Slider" });
+            DonNoteGimmickType.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
             DonNoteGimmickType.Location = new Point(74, 2);
             DonNoteGimmickType.Margin = new Padding(0, 3, 3, 3);
             DonNoteGimmickType.Name = "DonNoteGimmickType";
@@ -456,7 +456,7 @@
             comboBox3.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
             comboBox3.FormattingEnabled = true;
             comboBox3.ItemHeight = 11;
-            comboBox3.Items.AddRange(new object[] { "Barline", "Slider" });
+            comboBox3.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
             comboBox3.Location = new Point(74, 2);
             comboBox3.Margin = new Padding(0, 3, 3, 3);
             comboBox3.Name = "comboBox3";
@@ -567,7 +567,7 @@
             comboBox5.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
             comboBox5.FormattingEnabled = true;
             comboBox5.ItemHeight = 11;
-            comboBox5.Items.AddRange(new object[] { "Barline", "Slider" });
+            comboBox5.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
             comboBox5.Location = new Point(74, 2);
             comboBox5.Margin = new Padding(0, 3, 3, 3);
             comboBox5.Name = "comboBox5";
@@ -678,7 +678,7 @@
             comboBox7.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
             comboBox7.FormattingEnabled = true;
             comboBox7.ItemHeight = 11;
-            comboBox7.Items.AddRange(new object[] { "Barline", "Slider" });
+            comboBox7.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
             comboBox7.Location = new Point(74, 2);
             comboBox7.Margin = new Padding(0, 3, 3, 3);
             comboBox7.Name = "comboBox7";
