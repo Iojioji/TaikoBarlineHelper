@@ -60,7 +60,6 @@
             KatNoteBarlineSpacing = new NumericUpDown();
             label7 = new Label();
             KatNoteBarlineAmount = new NumericUpDown();
-            comboBox1 = new ComboBox();
             KatNoteEnabled = new CheckBox();
             comboBox3 = new ComboBox();
             DonFinisherSettingsPanel = new Panel();
@@ -130,7 +129,7 @@
             // LoadBeatmapStripButt
             // 
             LoadBeatmapStripButt.Name = "LoadBeatmapStripButt";
-            LoadBeatmapStripButt.Size = new Size(150, 22);
+            LoadBeatmapStripButt.Size = new Size(180, 22);
             LoadBeatmapStripButt.Text = "Load Beatmap";
             LoadBeatmapStripButt.Click += LoadBeatmapStripButt_Click;
             // 
@@ -332,7 +331,7 @@
             DonNoteEnabled.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             DonNoteEnabled.Location = new Point(3, 2);
             DonNoteEnabled.Name = "DonNoteEnabled";
-            DonNoteEnabled.Size = new Size(81, 16);
+            DonNoteEnabled.Size = new Size(68, 16);
             DonNoteEnabled.TabIndex = 2;
             DonNoteEnabled.Text = "Don";
             DonNoteEnabled.UseVisualStyleBackColor = true;
@@ -346,10 +345,10 @@
             DonNoteGimmickType.FormattingEnabled = true;
             DonNoteGimmickType.ItemHeight = 11;
             DonNoteGimmickType.Items.AddRange(new object[] { "Barline", "Slider" });
-            DonNoteGimmickType.Location = new Point(85, 2);
+            DonNoteGimmickType.Location = new Point(74, 2);
             DonNoteGimmickType.Margin = new Padding(0, 3, 3, 3);
             DonNoteGimmickType.Name = "DonNoteGimmickType";
-            DonNoteGimmickType.Size = new Size(60, 19);
+            DonNoteGimmickType.Size = new Size(71, 19);
             DonNoteGimmickType.TabIndex = 0;
             DonNoteGimmickType.Text = "Barline";
             // 
@@ -357,7 +356,6 @@
             // 
             KatSettingsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             KatSettingsPanel.Controls.Add(KatNoteBarlinePanel);
-            KatSettingsPanel.Controls.Add(comboBox1);
             KatSettingsPanel.Controls.Add(KatNoteEnabled);
             KatSettingsPanel.Controls.Add(comboBox3);
             KatSettingsPanel.Location = new Point(153, 3);
@@ -438,21 +436,6 @@
             KatNoteBarlineAmount.TabIndex = 0;
             KatNoteBarlineAmount.Value = new decimal(new int[] { 4, 0, 0, 0 });
             // 
-            // comboBox1
-            // 
-            comboBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            comboBox1.Enabled = false;
-            comboBox1.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            comboBox1.FormattingEnabled = true;
-            comboBox1.ItemHeight = 11;
-            comboBox1.Items.AddRange(new object[] { "Barline", "Slider" });
-            comboBox1.Location = new Point(231, 6);
-            comboBox1.Margin = new Padding(0, 3, 3, 3);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(98, 19);
-            comboBox1.TabIndex = 0;
-            comboBox1.Text = "Barline";
-            // 
             // KatNoteEnabled
             // 
             KatNoteEnabled.Checked = true;
@@ -460,7 +443,7 @@
             KatNoteEnabled.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             KatNoteEnabled.Location = new Point(3, 2);
             KatNoteEnabled.Name = "KatNoteEnabled";
-            KatNoteEnabled.Size = new Size(81, 16);
+            KatNoteEnabled.Size = new Size(68, 16);
             KatNoteEnabled.TabIndex = 2;
             KatNoteEnabled.Text = "Kat";
             KatNoteEnabled.UseVisualStyleBackColor = true;
@@ -474,10 +457,10 @@
             comboBox3.FormattingEnabled = true;
             comboBox3.ItemHeight = 11;
             comboBox3.Items.AddRange(new object[] { "Barline", "Slider" });
-            comboBox3.Location = new Point(86, 2);
+            comboBox3.Location = new Point(74, 2);
             comboBox3.Margin = new Padding(0, 3, 3, 3);
             comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(60, 19);
+            comboBox3.Size = new Size(72, 19);
             comboBox3.TabIndex = 0;
             comboBox3.Text = "Barline";
             // 
@@ -571,7 +554,7 @@
             DonFinisherNoteEnabled.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             DonFinisherNoteEnabled.Location = new Point(3, 2);
             DonFinisherNoteEnabled.Name = "DonFinisherNoteEnabled";
-            DonFinisherNoteEnabled.Size = new Size(81, 16);
+            DonFinisherNoteEnabled.Size = new Size(68, 16);
             DonFinisherNoteEnabled.TabIndex = 2;
             DonFinisherNoteEnabled.Text = "Don Fin";
             DonFinisherNoteEnabled.UseVisualStyleBackColor = true;
@@ -585,10 +568,10 @@
             comboBox5.FormattingEnabled = true;
             comboBox5.ItemHeight = 11;
             comboBox5.Items.AddRange(new object[] { "Barline", "Slider" });
-            comboBox5.Location = new Point(85, 2);
+            comboBox5.Location = new Point(74, 2);
             comboBox5.Margin = new Padding(0, 3, 3, 3);
             comboBox5.Name = "comboBox5";
-            comboBox5.Size = new Size(60, 19);
+            comboBox5.Size = new Size(71, 19);
             comboBox5.TabIndex = 0;
             comboBox5.Text = "Barline";
             // 
@@ -682,7 +665,7 @@
             KatFinisherNoteEnabled.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             KatFinisherNoteEnabled.Location = new Point(3, 2);
             KatFinisherNoteEnabled.Name = "KatFinisherNoteEnabled";
-            KatFinisherNoteEnabled.Size = new Size(81, 16);
+            KatFinisherNoteEnabled.Size = new Size(68, 16);
             KatFinisherNoteEnabled.TabIndex = 2;
             KatFinisherNoteEnabled.Text = "Kat Fin";
             KatFinisherNoteEnabled.UseVisualStyleBackColor = true;
@@ -696,10 +679,10 @@
             comboBox7.FormattingEnabled = true;
             comboBox7.ItemHeight = 11;
             comboBox7.Items.AddRange(new object[] { "Barline", "Slider" });
-            comboBox7.Location = new Point(86, 2);
+            comboBox7.Location = new Point(74, 2);
             comboBox7.Margin = new Padding(0, 3, 3, 3);
             comboBox7.Name = "comboBox7";
-            comboBox7.Size = new Size(60, 19);
+            comboBox7.Size = new Size(72, 19);
             comboBox7.TabIndex = 0;
             comboBox7.Text = "Barline";
             // 
@@ -779,7 +762,6 @@
         private ToolTip LoadedMapTooltip;
         private ComboBox DonNoteGimmickType;
         private Panel KatSettingsPanel;
-        private ComboBox comboBox1;
         private CheckBox KatNoteEnabled;
         private ComboBox comboBox3;
         private Panel DonFinisherSettingsPanel;
