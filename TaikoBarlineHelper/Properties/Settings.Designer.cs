@@ -12,7 +12,7 @@ namespace TaikoBarlineHelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -42,6 +42,198 @@ namespace TaikoBarlineHelper.Properties {
             }
             set {
                 this["LoadedMap"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DonSetEnabled {
+            get {
+                return ((bool)(this["DonSetEnabled"]));
+            }
+            set {
+                this["DonSetEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool KatSetEnabled {
+            get {
+                return ((bool)(this["KatSetEnabled"]));
+            }
+            set {
+                this["KatSetEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DonFinSetEnabled {
+            get {
+                return ((bool)(this["DonFinSetEnabled"]));
+            }
+            set {
+                this["DonFinSetEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool KatFinSetEnabled {
+            get {
+                return ((bool)(this["KatFinSetEnabled"]));
+            }
+            set {
+                this["KatFinSetEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int DonSetBarAmount {
+            get {
+                return ((int)(this["DonSetBarAmount"]));
+            }
+            set {
+                this["DonSetBarAmount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int KatSetBarAmount {
+            get {
+                return ((int)(this["KatSetBarAmount"]));
+            }
+            set {
+                this["KatSetBarAmount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int DonFinSetBarAmount {
+            get {
+                return ((int)(this["DonFinSetBarAmount"]));
+            }
+            set {
+                this["DonFinSetBarAmount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int KatFinSetBarAmount {
+            get {
+                return ((int)(this["KatFinSetBarAmount"]));
+            }
+            set {
+                this["KatFinSetBarAmount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int DonSetBarSpacing {
+            get {
+                return ((int)(this["DonSetBarSpacing"]));
+            }
+            set {
+                this["DonSetBarSpacing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int KatSetBarSpacing {
+            get {
+                return ((int)(this["KatSetBarSpacing"]));
+            }
+            set {
+                this["KatSetBarSpacing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int DonFinSetBarSpacing {
+            get {
+                return ((int)(this["DonFinSetBarSpacing"]));
+            }
+            set {
+                this["DonFinSetBarSpacing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int KatFinSetBarSpacing {
+            get {
+                return ((int)(this["KatFinSetBarSpacing"]));
+            }
+            set {
+                this["KatFinSetBarSpacing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public decimal DonSetBarSVIncrease {
+            get {
+                return ((decimal)(this["DonSetBarSVIncrease"]));
+            }
+            set {
+                this["DonSetBarSVIncrease"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public decimal KatSetBarSVIncrease {
+            get {
+                return ((decimal)(this["KatSetBarSVIncrease"]));
+            }
+            set {
+                this["KatSetBarSVIncrease"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.025")]
+        public decimal DonFinSetBarSVIncrease {
+            get {
+                return ((decimal)(this["DonFinSetBarSVIncrease"]));
+            }
+            set {
+                this["DonFinSetBarSVIncrease"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.025")]
+        public decimal KatFinSetBarSVIncrease {
+            get {
+                return ((decimal)(this["KatFinSetBarSVIncrease"]));
+            }
+            set {
+                this["KatFinSetBarSVIncrease"] = value;
             }
         }
     }

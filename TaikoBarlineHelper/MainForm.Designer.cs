@@ -281,6 +281,7 @@
             DonNoteBarlineSVIncrease.Size = new Size(57, 20);
             DonNoteBarlineSVIncrease.TabIndex = 4;
             BarlineSVIncreaseTooltip.SetToolTip(DonNoteBarlineSVIncrease, "How much each consecutive barline should increase SV by\r\nUse this to make \"fanning\" barlines");
+            DonNoteBarlineSVIncrease.ValueChanged += BarlineNoteValueChanged;
             // 
             // label3
             // 
@@ -302,6 +303,7 @@
             DonNoteBarlineSpacing.TabIndex = 2;
             BarlineSpacingTooltip.SetToolTip(DonNoteBarlineSpacing, "How many MS the barlines should space away from each other ");
             DonNoteBarlineSpacing.Value = new decimal(new int[] { 2, 0, 0, 0 });
+            DonNoteBarlineSpacing.ValueChanged += BarlineNoteValueChanged;
             // 
             // label2
             // 
@@ -323,6 +325,7 @@
             DonNoteBarlineAmount.TabIndex = 0;
             BarlineAmountTooltip.SetToolTip(DonNoteBarlineAmount, "The amount of barlines to add after (and before) the selected object. The total barlines to add is double this number.");
             DonNoteBarlineAmount.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            DonNoteBarlineAmount.ValueChanged += BarlineNoteValueChanged;
             // 
             // DonNoteEnabled
             // 
@@ -397,6 +400,7 @@
             KatNoteBarlineSVIncrease.Name = "KatNoteBarlineSVIncrease";
             KatNoteBarlineSVIncrease.Size = new Size(57, 20);
             KatNoteBarlineSVIncrease.TabIndex = 4;
+            KatNoteBarlineSVIncrease.ValueChanged += BarlineNoteValueChanged;
             // 
             // label6
             // 
@@ -416,6 +420,7 @@
             KatNoteBarlineSpacing.Size = new Size(42, 20);
             KatNoteBarlineSpacing.TabIndex = 2;
             KatNoteBarlineSpacing.Value = new decimal(new int[] { 2, 0, 0, 0 });
+            KatNoteBarlineSpacing.ValueChanged += BarlineNoteValueChanged;
             // 
             // label7
             // 
@@ -435,6 +440,7 @@
             KatNoteBarlineAmount.Size = new Size(42, 20);
             KatNoteBarlineAmount.TabIndex = 0;
             KatNoteBarlineAmount.Value = new decimal(new int[] { 4, 0, 0, 0 });
+            KatNoteBarlineAmount.ValueChanged += BarlineNoteValueChanged;
             // 
             // KatNoteEnabled
             // 
@@ -510,6 +516,7 @@
             DonFinisherNoteBarlineSVIncrease.Size = new Size(57, 20);
             DonFinisherNoteBarlineSVIncrease.TabIndex = 4;
             DonFinisherNoteBarlineSVIncrease.Value = new decimal(new int[] { 25, 0, 0, 196608 });
+            DonFinisherNoteBarlineSVIncrease.ValueChanged += BarlineNoteValueChanged;
             // 
             // label9
             // 
@@ -529,6 +536,7 @@
             DonFinisherNoteBarlineSpacing.Size = new Size(42, 20);
             DonFinisherNoteBarlineSpacing.TabIndex = 2;
             DonFinisherNoteBarlineSpacing.Value = new decimal(new int[] { 2, 0, 0, 0 });
+            DonFinisherNoteBarlineSpacing.ValueChanged += BarlineNoteValueChanged;
             // 
             // label10
             // 
@@ -548,6 +556,7 @@
             DonFinisherNoteBarlineAmount.Size = new Size(42, 20);
             DonFinisherNoteBarlineAmount.TabIndex = 0;
             DonFinisherNoteBarlineAmount.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            DonFinisherNoteBarlineAmount.ValueChanged += BarlineNoteValueChanged;
             // 
             // DonFinisherNoteEnabled
             // 
@@ -621,6 +630,7 @@
             KatFinisherNoteBarlineSVIncrease.Size = new Size(57, 20);
             KatFinisherNoteBarlineSVIncrease.TabIndex = 4;
             KatFinisherNoteBarlineSVIncrease.Value = new decimal(new int[] { 25, 0, 0, 196608 });
+            KatFinisherNoteBarlineSVIncrease.ValueChanged += BarlineNoteValueChanged;
             // 
             // label12
             // 
@@ -640,6 +650,7 @@
             KatFinisherNoteBarlineSpacing.Size = new Size(42, 20);
             KatFinisherNoteBarlineSpacing.TabIndex = 2;
             KatFinisherNoteBarlineSpacing.Value = new decimal(new int[] { 2, 0, 0, 0 });
+            KatFinisherNoteBarlineSpacing.ValueChanged += BarlineNoteValueChanged;
             // 
             // label13
             // 
@@ -659,6 +670,7 @@
             KatFinisherNoteBarlineAmount.Size = new Size(42, 20);
             KatFinisherNoteBarlineAmount.TabIndex = 0;
             KatFinisherNoteBarlineAmount.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            KatFinisherNoteBarlineAmount.ValueChanged += BarlineNoteValueChanged;
             // 
             // KatFinisherNoteEnabled
             // 

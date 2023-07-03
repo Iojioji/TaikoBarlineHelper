@@ -12,6 +12,7 @@ using TaikoBarlineHelper.Settings;
 namespace TaikoBarlineHelper
 {
     public enum GimmickType { Barline = 0, Slider = 1 }
+    public enum TaikoNote { Don = 0, Kat = 1, DonFinisher = 2, KatFinisher = 3 }
     public partial class MainForm : Form
     {
         Beatmap _loadedBeatmap;
@@ -19,6 +20,8 @@ namespace TaikoBarlineHelper
         List<TimingPoint> _backupTimingPoints;
 
         Beatmap _backupMap;
+
+        bool _updateSettingsOnNoteChange = false;
 
         bool _applyDon;
         bool _applyKat;
@@ -32,6 +35,8 @@ namespace TaikoBarlineHelper
             {
                 _applyDon = value;
                 UpdateBarlinePanelStatus(DonNoteBarlinePanel, _applyDon);
+                if (_updateSettingsOnNoteChange)
+                    SettingsManager.DonSettings.Enabled = _applyDon;
             }
         }
         bool ApplyKat
@@ -41,6 +46,8 @@ namespace TaikoBarlineHelper
             {
                 _applyKat = value;
                 UpdateBarlinePanelStatus(KatNoteBarlinePanel, _applyKat);
+                if (_updateSettingsOnNoteChange)
+                    SettingsManager.KatSettings.Enabled = _applyKat;
             }
         }
         bool ApplyDonFinisher
@@ -50,6 +57,8 @@ namespace TaikoBarlineHelper
             {
                 _applyDonFinisher = value;
                 UpdateBarlinePanelStatus(DonFinisherNoteBarlinePanel, _applyDonFinisher);
+                if (_updateSettingsOnNoteChange)
+                    SettingsManager.DonFinSettings.Enabled = _applyDonFinisher;
             }
         }
         bool ApplyKatFinisher
@@ -59,6 +68,8 @@ namespace TaikoBarlineHelper
             {
                 _applyKatFinisher = value;
                 UpdateBarlinePanelStatus(KatFinisherNoteBarlinePanel, _applyKatFinisher);
+                if (_updateSettingsOnNoteChange)
+                    SettingsManager.KatFinSettings.Enabled = _applyKatFinisher;
             }
         }
 
@@ -76,12 +87,34 @@ namespace TaikoBarlineHelper
             SettingsManager.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             //TODO: Load this from settings, along with the values lmao
-            ApplyDon = true;
-            ApplyKat = true;
-            ApplyDonFinisher = false;
-            ApplyKatFinisher = false;
+            LoadSavedNoteValues();
+
+            _updateSettingsOnNoteChange = true;
 
             UpdateMakeBarlineButt();
+        }
+
+        void LoadSavedNoteValues()
+        {
+            DonNoteEnabled.Checked = SettingsManager.DonSettings.Enabled;
+            KatNoteEnabled.Checked = SettingsManager.KatSettings.Enabled;
+            DonFinisherNoteEnabled.Checked = SettingsManager.DonFinSettings.Enabled;
+            KatFinisherNoteEnabled.Checked = SettingsManager.KatFinSettings.Enabled;
+
+            DonNoteBarlineAmount.Value = SettingsManager.DonSettings.BarlineAmount;
+            KatNoteBarlineAmount.Value = SettingsManager.KatSettings.BarlineAmount;
+            DonFinisherNoteBarlineAmount.Value = SettingsManager.DonFinSettings.BarlineAmount;
+            KatFinisherNoteBarlineAmount.Value = SettingsManager.KatFinSettings.BarlineAmount;
+
+            DonNoteBarlineSpacing.Value = SettingsManager.DonSettings.BarlineSpacing;
+            KatNoteBarlineSpacing.Value = SettingsManager.KatSettings.BarlineSpacing;
+            DonFinisherNoteBarlineSpacing.Value = SettingsManager.DonFinSettings.BarlineSpacing;
+            KatFinisherNoteBarlineSpacing.Value = SettingsManager.KatFinSettings.BarlineSpacing;
+
+            DonNoteBarlineSVIncrease.Value = SettingsManager.DonSettings.BarlineSVIncrease;
+            KatNoteBarlineSVIncrease.Value = SettingsManager.KatSettings.BarlineSVIncrease;
+            DonFinisherNoteBarlineSVIncrease.Value = SettingsManager.DonFinSettings.BarlineSVIncrease;
+            KatFinisherNoteBarlineSVIncrease.Value = SettingsManager.KatFinSettings.BarlineSVIncrease;
         }
 
         private void ParseBeatmap(string fileName)
@@ -499,6 +532,46 @@ namespace TaikoBarlineHelper
                     ApplyKatFinisher = isChecked;
                     break;
             }
+        }
+        private void BarlineNoteValueChanged(object sender, EventArgs e)
+        {
+            if (!_updateSettingsOnNoteChange) return;
+
+            Control control = (Control)sender;
+            string name = control.Name;
+
+            if (name.Contains("Don"))
+            {
+                if (name.Contains("DonFinisher"))
+                {
+                    SettingsManager.DonFinSettings.BarlineAmount = (int)DonFinisherNoteBarlineAmount.Value;
+                    SettingsManager.DonFinSettings.BarlineSpacing = (int)DonFinisherNoteBarlineSpacing.Value;
+                    SettingsManager.DonFinSettings.BarlineSVIncrease = DonFinisherNoteBarlineSVIncrease.Value;
+                }
+                else
+                {
+                    SettingsManager.DonSettings.BarlineAmount = (int)DonNoteBarlineAmount.Value;
+                    SettingsManager.DonSettings.BarlineSpacing = (int)DonNoteBarlineSpacing.Value;
+                    SettingsManager.DonSettings.BarlineSVIncrease = DonNoteBarlineSVIncrease.Value;
+                }
+            }
+            else
+            {
+                if (name.Contains("KatFinisher"))
+                {
+                    SettingsManager.KatFinSettings.BarlineAmount = (int)KatFinisherNoteBarlineAmount.Value;
+                    SettingsManager.KatFinSettings.BarlineSpacing = (int)KatFinisherNoteBarlineSpacing.Value;
+                    SettingsManager.KatFinSettings.BarlineSVIncrease = KatFinisherNoteBarlineSVIncrease.Value;
+                }
+                else
+                {
+                    SettingsManager.KatSettings.BarlineAmount = (int)KatNoteBarlineAmount.Value;
+                    SettingsManager.KatSettings.BarlineSpacing = (int)KatNoteBarlineSpacing.Value;
+                    SettingsManager.KatSettings.BarlineSVIncrease = KatNoteBarlineSVIncrease.Value;
+                }
+            }
+
+            Debug.WriteLine($"Don Finisher? {(name.Contains("DonFinisher") ? true : false)}");
         }
         private void TimingPointTextBox_TextChanged(object sender, EventArgs e)
         {
