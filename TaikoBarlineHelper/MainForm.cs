@@ -227,9 +227,30 @@ namespace TaikoBarlineHelper
                 MessageBox.Show($"No updates pending; you're already up to date fam (v{SettingsManager.Version})");
             }
         }
+
+        void TestReadLines(string[] lines)
+        {
+            //Trim lines
+            List<string> auxLines = new List<string>();
+
+            foreach (string line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    auxLines.Add(line);
+                }
+            }
+
+
+        }
+
         private void MakeBarlineBut_Click(object sender, EventArgs e)
         {
             string[] lines = TimingPointTextBox.Text.Split('\n');
+
+            TestReadLines(lines);
+
+            return;
 
             RefreshMap();
             _gimmickHandler.MakeGimmick(lines);
