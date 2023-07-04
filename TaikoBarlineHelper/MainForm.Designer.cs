@@ -213,6 +213,7 @@
             TutorialCheckBox.TabIndex = 0;
             TutorialCheckBox.Text = "Is Tutorial";
             TutorialCheckBox.UseVisualStyleBackColor = true;
+            TutorialCheckBox.CheckedChanged += IsTutorial_CheckedChanged;
             // 
             // NoteSettingsTablePanel
             // 

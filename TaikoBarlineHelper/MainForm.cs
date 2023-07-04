@@ -8,6 +8,7 @@ using OsuParsers.Enums.Beatmaps;
 using System.Diagnostics;
 using System.Reflection;
 using TaikoBarlineHelper.Settings;
+using TaikoBarlineHelper.Gimmicks;
 
 namespace TaikoBarlineHelper
 {
@@ -15,11 +16,7 @@ namespace TaikoBarlineHelper
     public enum TaikoNote { Don = 0, Kat = 1, DonFinisher = 2, KatFinisher = 3 }
     public partial class MainForm : Form
     {
-        Beatmap _loadedBeatmap;
-
-        List<TimingPoint> _backupTimingPoints;
-
-        Beatmap _backupMap;
+        GimmickHandler _gimmickHandler = new GimmickHandler();
 
         bool _updateSettingsOnNoteChange = false;
 
@@ -86,7 +83,7 @@ namespace TaikoBarlineHelper
 
             SettingsManager.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            //TODO: Load this from settings, along with the values lmao
+            TutorialCheckBox.Checked = SettingsManager.IsTutorial;
             LoadSavedNoteValues();
 
             _updateSettingsOnNoteChange = true;
@@ -96,10 +93,10 @@ namespace TaikoBarlineHelper
 
         void LoadSavedNoteValues()
         {
-            DonNoteEnabled.Checked = SettingsManager.DonSettings.Enabled;
-            KatNoteEnabled.Checked = SettingsManager.KatSettings.Enabled;
-            DonFinisherNoteEnabled.Checked = SettingsManager.DonFinSettings.Enabled;
-            KatFinisherNoteEnabled.Checked = SettingsManager.KatFinSettings.Enabled;
+            DonNoteEnabled.Checked = ApplyDon = SettingsManager.DonSettings.Enabled;
+            KatNoteEnabled.Checked = ApplyKat = SettingsManager.KatSettings.Enabled;
+            DonFinisherNoteEnabled.Checked = ApplyDonFinisher = SettingsManager.DonFinSettings.Enabled;
+            KatFinisherNoteEnabled.Checked = ApplyKatFinisher = SettingsManager.KatFinSettings.Enabled;
 
             DonNoteBarlineAmount.Value = SettingsManager.DonSettings.BarlineAmount;
             KatNoteBarlineAmount.Value = SettingsManager.KatSettings.BarlineAmount;
@@ -120,27 +117,26 @@ namespace TaikoBarlineHelper
         private void ParseBeatmap(string fileName)
         {
             //TimingPointTextBox.Text = fileName;
+            Beatmap loadedBeatmap = null;
+
             try
             {
-                _loadedBeatmap = BeatmapDecoder.Decode(fileName);
+                loadedBeatmap = BeatmapDecoder.Decode(fileName);
 
-                if (_loadedBeatmap.GeneralSection.Mode == Ruleset.Taiko)
+                if (loadedBeatmap.GeneralSection.Mode == Ruleset.Taiko)
                 {
-                    SetMapInfoToLabels($"{_loadedBeatmap.MetadataSection.Title}", $"[{_loadedBeatmap.MetadataSection.Version}]");
-
+                    _gimmickHandler.LoadedBeatmap = loadedBeatmap;
+                    SetMapInfoToLabels($"{loadedBeatmap.MetadataSection.Title}", $"[{loadedBeatmap.MetadataSection.Version}]");
                     SettingsManager.LoadedMap = fileName;
                     //TimingPointTextBox.Text = $"name: {_loadedBeatmap.MetadataSection.Title}";
                 }
                 else
                 {
-                    _loadedBeatmap = null;
                     MessageBox.Show($"Your map isn't taiko lmao");
                 }
             }
             catch (Exception ex)
             {
-                _loadedBeatmap = null;
-
                 SetMapInfoToLabels("Nothing", "[Nothing]");
 
                 SettingsManager.LoadedMap = "";
@@ -151,254 +147,6 @@ namespace TaikoBarlineHelper
         void RefreshMap()
         {
             ParseBeatmap(SettingsManager.LoadedMap);
-        }
-
-
-        void LookForThing(string timingLine)
-        {
-            string targetTimingPoint = timingLine;
-            string barlineMSString = targetTimingPoint.Split(',')[0];
-
-            if (string.IsNullOrEmpty(barlineMSString) || string.IsNullOrWhiteSpace(barlineMSString))
-            {
-                return;
-            }
-
-            int barlineMS = -1;
-            int.TryParse(barlineMSString, out barlineMS);
-
-            if (barlineMS == -1)
-            {
-                return;
-            }
-
-            TimingPoint currentPoint = null;
-            TimingPoint lastRedline = null;
-
-            currentPoint = _loadedBeatmap.TimingPoints.Find(x => x.Offset == barlineMS && x.BeatLength < 0);
-
-            if (currentPoint == null)
-            {
-                Debug.WriteLine($"No such point as {barlineMS}");
-                return;
-            }
-
-            foreach (TimingPoint tp in _loadedBeatmap.TimingPoints)
-            {
-                //bool isTarget = tp.Offset == barlineMS;
-                bool isRedline = tp.BeatLength >= 0;
-
-                if (isRedline)
-                {
-                    if (tp.Offset <= barlineMS)
-                    {
-                        lastRedline = tp;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (lastRedline == null)
-            {
-                Debug.WriteLine($"No redline lmao {barlineMS}");
-                return;
-            }
-
-            GenerateBarlines(currentPoint, lastRedline);
-            Debug.WriteLine($"TP {currentPoint.Offset} -> {barlineMS}\r\n  SV: {currentPoint.BeatLength}\r\n");
-        }
-        TaikoHit GetNoteInOffset(int offset)
-        {
-            TaikoHit hitObject = null;
-            foreach (HitObject ho in _loadedBeatmap.HitObjects)
-            {
-                if (ho.StartTime != offset)
-                    continue;
-
-                TaikoHit? hit = ho as TaikoHit;
-                if (hit != null)
-                {
-                    hitObject = hit;
-                    break;
-                }
-            }
-            return hitObject;
-        }
-
-        void GenerateBarlines(TimingPoint origin, TimingPoint lastRedline)
-        {
-            if (origin == null)
-            {
-                //TODO: Tell user wtf are you doing lmao
-                return;
-            }
-            if (lastRedline == null)
-            {
-                //TODO: uuuh, no previous redline wtf
-                return;
-            }
-
-
-            double svValue = -100 / origin.BeatLength;
-            double bpm = 60000 / lastRedline.BeatLength;
-            int originalOffset = origin.Offset;
-            TaikoHit note = GetNoteInOffset(originalOffset);
-
-            if (note == null)
-            {
-                return;
-            }
-
-            bool isKiai = (int)origin.Effects == 9 || origin.Effects == Effects.Kiai;
-
-            if (!ShouldAddBarline(note))
-            {
-                return;
-            }
-
-            if (!TutorialCheckBox.Checked)
-            {
-                GenerateBarline(originalOffset, 10000, 10, origin.TimeSignature, origin.SampleSet, origin.CustomSampleSet, origin.Volume, isKiai, true);
-            }
-
-            if (note.IsBig)
-            {
-                if (note.Color == TaikoColor.Blue)
-                {
-                    //GenerateBarlines(origin, bpm, isKiai, 6, 2, 0.0125);
-                    GenerateBarlines(origin, bpm, isKiai, (int)KatFinisherNoteBarlineAmount.Value, (int)KatFinisherNoteBarlineSpacing.Value, (double)KatFinisherNoteBarlineSVIncrease.Value);
-                }
-                else
-                {
-                    //GenerateBarlines(origin, bpm, isKiai, 10, 3, 0.06);
-                    GenerateBarlines(origin, bpm, isKiai, (int)DonFinisherNoteBarlineAmount.Value, (int)DonFinisherNoteBarlineSpacing.Value, (double)DonFinisherNoteBarlineSVIncrease.Value);
-                }
-            }
-            else
-            {
-                if (note.Color == TaikoColor.Blue)
-                {
-                    //GenerateBarlines(origin, bpm, isKiai, 4, 3, 0);
-                    GenerateBarlines(origin, bpm, isKiai, (int)KatNoteBarlineAmount.Value, (int)KatNoteBarlineSpacing.Value, (double)KatNoteBarlineSVIncrease.Value);
-                }
-                else
-                {
-                    //GenerateBarlines(origin, bpm, isKiai, 1, 1, 0);
-                    GenerateBarlines(origin, bpm, isKiai, (int)DonNoteBarlineAmount.Value, (int)DonNoteBarlineSpacing.Value, (double)DonNoteBarlineSVIncrease.Value);
-                }
-            }
-
-            //_loadedBeatmap.TimingPoints.Add(centerRedline);
-            if (!TutorialCheckBox.Checked)
-            {
-                _loadedBeatmap.TimingPoints.Remove(origin);
-            }
-
-            _loadedBeatmap.TimingPoints = _loadedBeatmap.TimingPoints.OrderBy(x => x.Offset).ToList();
-
-            //_loadedBeatmap.Save(SettingsManager.LoadedMap);
-        }
-
-        void GenerateBarlines(TimingPoint origin, double bpm, bool isKiai, int extraBarlines, int offsetIncrease, double svIncrease)
-        {
-            double svValue = -100 / origin.BeatLength;
-            int originalOffset = origin.Offset;
-
-            for (int i = 0; i < extraBarlines; i++)
-            {
-                int barOffset = 1 + (i * offsetIncrease);
-                double svOffset = (i * svIncrease);
-
-                GenerateBarline(originalOffset + barOffset, bpm, svValue + svOffset, origin.TimeSignature, origin.SampleSet, origin.CustomSampleSet, origin.Volume, isKiai, false);
-                GenerateBarline(originalOffset - barOffset, bpm, svValue - svOffset, origin.TimeSignature, origin.SampleSet, origin.CustomSampleSet, origin.Volume, isKiai, false);
-            }
-        }
-
-        void GenerateBarline(int offset, double bpm, double sv, TimeSignature timeSignature, SampleSet sampleSet, int customSampleSet, int volume, bool kiai, bool omitFirstBarline)
-        {
-            int redlineEffects = 0;
-            if (kiai)
-                redlineEffects += 1;
-            if (omitFirstBarline)
-                redlineEffects += 8;
-
-            TimingPoint redline = new TimingPoint()
-            {
-                Offset = offset,
-                BeatLength = 60000 / bpm,
-                TimeSignature = timeSignature,
-                SampleSet = sampleSet,
-                CustomSampleSet = customSampleSet,
-                Volume = volume,
-                Inherited = false,
-                Effects = (Effects)redlineEffects
-            };
-
-            TimingPoint greenline = new TimingPoint()
-            {
-                Offset = offset,
-                BeatLength = -100 / sv,
-                TimeSignature = timeSignature,
-                SampleSet = sampleSet,
-                CustomSampleSet = customSampleSet,
-                Volume = volume,
-                Inherited = true,
-                Effects = (Effects)redlineEffects
-            };
-
-            _loadedBeatmap.TimingPoints.Add(redline);
-            _loadedBeatmap.TimingPoints.Add(greenline);
-        }
-
-        Beatmap CloneBeatmap(Beatmap toClone)
-        {
-            _backupTimingPoints = toClone.TimingPoints.ToList();
-            Beatmap beatmap = new Beatmap()
-            {
-                GeneralSection = toClone.GeneralSection,
-                EditorSection = toClone.EditorSection,
-                MetadataSection = toClone.MetadataSection,
-                DifficultySection = toClone.DifficultySection,
-                EventsSection = toClone.EventsSection,
-                ColoursSection = toClone.ColoursSection,
-                TimingPoints = _backupTimingPoints,
-                HitObjects = toClone.HitObjects,
-            };
-
-            return beatmap;
-        }
-
-        bool ShouldAddBarline(TaikoHit hit)
-        {
-            bool result = false;
-
-            if (hit.IsBig)
-            {
-                if (hit.Color == TaikoColor.Blue)
-                {
-                    result = ApplyKatFinisher;
-                }
-                else
-                {
-                    result = ApplyDonFinisher;
-                }
-            }
-            else
-            {
-                if (hit.Color == TaikoColor.Blue)
-                {
-                    result = ApplyKat;
-                }
-                else
-                {
-                    result = ApplyDon;
-                }
-            }
-
-            return result;
         }
 
         void SetMapInfoToLabels(string name, string diff)
@@ -417,7 +165,7 @@ namespace TaikoBarlineHelper
         void UpdateMakeBarlineButt()
         {
             bool enabled = true;
-            if (_loadedBeatmap == null)
+            if (_gimmickHandler.LoadedBeatmap == null)
             {
                 enabled = false;
             }
@@ -465,7 +213,8 @@ namespace TaikoBarlineHelper
                     try
                     {
                         Debug.WriteLine($"Starting autoupdater");
-                        AutoUpdater.Start(Properties.Settings.Default.UpdateXML);
+                        //AutoUpdater.Start(Properties.Settings.Default.UpdateXML);
+                        AutoUpdater.Start(SettingsManager.UpdateXML);
                     }
                     catch (Exception ex)
                     {
@@ -483,33 +232,44 @@ namespace TaikoBarlineHelper
             string[] lines = TimingPointTextBox.Text.Split('\n');
 
             RefreshMap();
-            if (_loadedBeatmap == null)
-            {
+            _gimmickHandler.MakeGimmick(lines);
 
-                return;
-            }
-
-            _backupMap = CloneBeatmap(_loadedBeatmap);
-            if (_backupMap != null)
+            if (_gimmickHandler.BackupMap != null)
                 OopsButt.Enabled = true;
 
-            foreach (string line in lines)
-            {
-                LookForThing(line);
-            }
-
-            Debug.WriteLine($"Saving Map!");
-            _loadedBeatmap.Save(SettingsManager.LoadedMap);
+            ///RefreshMap();
+            ///if (_loadedBeatmap == null)
+            ///{
+            ///    return;
+            ///}
+            ///
+            ///_backupMap = CloneBeatmap(_loadedBeatmap);
+            ///if (_backupMap != null)
+            ///    OopsButt.Enabled = true;
+            ///
+            ///foreach (string line in lines)
+            ///{
+            ///    LookForThing(line);
+            ///}
+            ///
+            ///Debug.WriteLine($"Saving Map!");
+            ///_loadedBeatmap.Save(SettingsManager.LoadedMap);
         }
         private void OopsButt_Click(object sender, EventArgs e)
         {
-            if (_backupMap != null)
+            if (_gimmickHandler.BackupMap != null)
             {
-                _backupMap.Save(SettingsManager.LoadedMap);
-                _backupMap = null;
-                _backupTimingPoints.Clear();
+                _gimmickHandler.RevertChanges();
                 OopsButt.Enabled = false;
             }
+
+            ///if (_backupMap != null)
+            ///{
+            ///    _backupMap.Save(SettingsManager.LoadedMap);
+            ///    _backupMap = null;
+            ///    _backupTimingPoints.Clear();
+            ///    OopsButt.Enabled = false;
+            ///}
         }
         private void NoteEnabled_CheckedChanged(object sender, EventArgs e)
         {
@@ -532,6 +292,15 @@ namespace TaikoBarlineHelper
                     ApplyKatFinisher = isChecked;
                     break;
             }
+        }
+        private void IsTutorial_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_updateSettingsOnNoteChange) return;
+
+            CheckBox checkbox = (CheckBox)sender;
+            bool isChecked = checkbox.Checked;
+
+            SettingsManager.IsTutorial = isChecked;
         }
         private void BarlineNoteValueChanged(object sender, EventArgs e)
         {

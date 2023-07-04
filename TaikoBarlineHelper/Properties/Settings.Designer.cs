@@ -236,5 +236,17 @@ namespace TaikoBarlineHelper.Properties {
                 this["KatFinSetBarSVIncrease"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsTutorial {
+            get {
+                return ((bool)(this["IsTutorial"]));
+            }
+            set {
+                this["IsTutorial"] = value;
+            }
+        }
     }
 }

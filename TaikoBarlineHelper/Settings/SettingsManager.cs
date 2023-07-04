@@ -22,6 +22,9 @@ namespace TaikoBarlineHelper.Settings
         static NoteSettings _donFinSettings;
         static NoteSettings _katFinSettings;
 
+        static bool _isTutorial;
+
+        public static string UpdateXML { get => Properties.Settings.Default.UpdateXML; }
         public static string Version { get => _version; set => _version = value; }
         public static string LoadedMap
         {
@@ -29,6 +32,8 @@ namespace TaikoBarlineHelper.Settings
             set
             {
                 _loadedMap = value;
+                Properties.Settings.Default.LoadedMap = _loadedMap;
+                Properties.Settings.Default.Save();
             }
         }
         public static NoteSettings DonSettings
@@ -63,11 +68,22 @@ namespace TaikoBarlineHelper.Settings
                 _katFinSettings = value;
             }
         }
+        public static bool IsTutorial
+        {
+            get => _isTutorial;
+            set
+            {
+                _isTutorial = value;
+                Properties.Settings.Default.IsTutorial = _isTutorial;
+                Properties.Settings.Default.Save();
+            }
+        }
 
 
         public static void Init()
         {
             _loadedMap = Properties.Settings.Default.LoadedMap;
+            _isTutorial = Properties.Settings.Default.IsTutorial;
 
             _donSettings = new NoteSettings()
             {
