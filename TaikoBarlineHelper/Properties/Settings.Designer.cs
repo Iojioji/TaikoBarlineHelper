@@ -95,6 +95,54 @@ namespace TaikoBarlineHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DonSetGimmickType {
+            get {
+                return ((int)(this["DonSetGimmickType"]));
+            }
+            set {
+                this["DonSetGimmickType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int KatSetGimmickType {
+            get {
+                return ((int)(this["KatSetGimmickType"]));
+            }
+            set {
+                this["KatSetGimmickType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DonFinSetGimmickType {
+            get {
+                return ((int)(this["DonFinSetGimmickType"]));
+            }
+            set {
+                this["DonFinSetGimmickType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int KatFinSetGimmickType {
+            get {
+                return ((int)(this["KatFinSetGimmickType"]));
+            }
+            set {
+                this["KatFinSetGimmickType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int DonSetBarAmount {
             get {
@@ -246,6 +294,18 @@ namespace TaikoBarlineHelper.Properties {
             }
             set {
                 this["IsTutorial"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LinesFieldString {
+            get {
+                return ((string)(this["LinesFieldString"]));
+            }
+            set {
+                this["LinesFieldString"] = value;
             }
         }
     }

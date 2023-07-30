@@ -12,6 +12,7 @@ using OsuParsers.Enums.Beatmaps;
 
 namespace TaikoBarlineHelper.Gimmicks
 {
+    enum TaikoObjectType { None = 0, TimingPoint = 1, Note = 2, Slider = 3, Spinner = 4 }
     public class GimmickHandler
     {
         Beatmap? _loadedBeatmap;
@@ -21,18 +22,35 @@ namespace TaikoBarlineHelper.Gimmicks
         public Beatmap LoadedBeatmap { get => _loadedBeatmap; set => _loadedBeatmap = value; }
         public Beatmap BackupMap { get => _backupMap; set => _backupMap = value; }
 
-        public void MakeGimmick(string[] lines)
+        public void MakeGimmick(List<string> lines)
         {
             if (_loadedBeatmap == null)
             {
                 return;
             }
 
+            (TaikoObjectType type, List<string> lines) cleanedLines = CleanLines(lines);
+            //return;
+
+            if (cleanedLines.type == TaikoObjectType.None)
+            {
+                return;
+            }
+
             _backupMap = CloneBeatmap(_loadedBeatmap);
 
-            foreach (string line in lines)
+            //TODO: Instead of making all the thing here, make LookForNote return a list of objects to affect and THEN do the thing.
+            foreach (string line in cleanedLines.lines)
             {
-                LookForThing(line);
+                if (cleanedLines.type == TaikoObjectType.TimingPoint)
+                {
+                    //Do lines only.
+                    LookForNote(line);
+                }
+                else
+                {
+                    //TODO: Do notes only
+                }
             }
 
             Debug.WriteLine($"Saving Map!");
@@ -64,7 +82,75 @@ namespace TaikoBarlineHelper.Gimmicks
             return beatmap;
         }
 
-        void LookForThing(string timingLine)
+        /// <summary>
+        /// Cleans the lines to keep only affectable elements
+        /// </summary>
+        /// <param name="lines">The lines to clean</param>
+        /// <returns>Only returns the lines that can be affected by barlines (TimingPoints or normal notes)</returns>
+        (TaikoObjectType type, List<string> line) CleanLines(List<string> lines)
+        {
+            (TaikoObjectType type, List<string> lines) result = (TaikoObjectType.None, new List<string>());
+            //List<(TaikoObjectType type, string line)> cleanedLines = new List<(TaikoObjectType type, string line)>();
+            
+            int index = 0;
+            //TaikoObjectType currentObjectType = TaikoObjectType.None;
+            Debug.WriteLine($"Checking {lines.Count} lines!");
+            foreach (string line in lines)
+            {
+                List<string> splitLines = new List<string>();
+                splitLines.AddRange(line.Split(','));
+
+                if (splitLines.Count > 8)
+                {
+                    Debug.WriteLine($"   [Line {index}] [{line}] is invalid due to number of fields! ({splitLines.Count})");
+                    index++;
+                    continue;
+                }
+
+                bool isTimingPoint = splitLines.Count == 8 && !line.Contains(':');
+                bool isNote = splitLines.Count == 6;
+                bool isSlider = splitLines.Count == 8 && line.Contains('|');
+                //bool isSpinner = splitLines.Count == 7;
+
+                string type = isTimingPoint ? "TimingPoint" : (isNote ? "Note" : (isSlider ? "Slider" : "Spinner"));
+                TaikoObjectType objectType = isTimingPoint ? TaikoObjectType.TimingPoint : (isNote ? TaikoObjectType.Note : (isSlider ? TaikoObjectType.Slider : TaikoObjectType.Spinner));
+
+                if (objectType == TaikoObjectType.Spinner || objectType == TaikoObjectType.Slider)
+                {
+                    continue;
+                }
+
+                if (result.type != TaikoObjectType.None && result.type != objectType)
+                {
+                    MessageBox.Show($"Please don't mix objects in the text field (Only use TimingPoints or only use HitObjects)");
+                    return (TaikoObjectType.None, new List<string>());
+                }
+
+                if (objectType == TaikoObjectType.TimingPoint || objectType == TaikoObjectType.Note)
+                {
+                    result.lines.Add(line);
+                    result.type = objectType;
+                }
+
+                //Debug.WriteLine($"[Line {index}], [{line}] - [{splitLines.Count}] - [Timing? {isTimingPoint}], [Note? {isNote}], [Spinner? {isSpinner}], [Slider? {isSlider}]");
+                Debug.WriteLine($"   [Line {index}], [{line}] - [{splitLines.Count}] - [{type}]");
+                index++;
+            }
+
+            string finalResult = $"\r\n\r\nFinished results:\r\n";
+
+            foreach (string line in result.lines)
+            {
+                finalResult += $"   {line}\r\n";
+            }
+
+            Debug.WriteLine($"{finalResult}");
+
+            //return cleanedLines;
+            return result;
+        }
+
+        void LookForNote(string timingLine)
         {
             string targetTimingPoint = timingLine;
             string barlineMSString = targetTimingPoint.Split(',')[0];

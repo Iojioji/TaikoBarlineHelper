@@ -13,6 +13,7 @@ namespace TaikoBarlineHelper.Settings
     {
         static string _version;
         static string _loadedMap;
+        static string _linesString;
 
         /// <summary>
         /// TODO: Decide how to organize individual note settings.
@@ -33,6 +34,16 @@ namespace TaikoBarlineHelper.Settings
             {
                 _loadedMap = value;
                 Properties.Settings.Default.LoadedMap = _loadedMap;
+                Properties.Settings.Default.Save();
+            }
+        }
+        public static string LinesString
+        {
+            get => _linesString;
+            set
+            {
+                _linesString = value;
+                Properties.Settings.Default.LinesFieldString = _linesString;
                 Properties.Settings.Default.Save();
             }
         }
@@ -83,11 +94,14 @@ namespace TaikoBarlineHelper.Settings
         public static void Init()
         {
             _loadedMap = Properties.Settings.Default.LoadedMap;
+            _linesString = Properties.Settings.Default.LinesFieldString;
             _isTutorial = Properties.Settings.Default.IsTutorial;
 
             _donSettings = new NoteSettings()
             {
                 Note = TaikoNote.Don,
+                GimmickType = (GimmickType)Properties.Settings.Default.DonSetGimmickType,
+
                 Enabled = Properties.Settings.Default.DonSetEnabled,
                 BarlineAmount = Properties.Settings.Default.DonSetBarAmount,
                 BarlineSpacing = Properties.Settings.Default.DonSetBarSpacing,
@@ -97,6 +111,8 @@ namespace TaikoBarlineHelper.Settings
             {
                 Note = TaikoNote.Kat,
                 Enabled = Properties.Settings.Default.KatSetEnabled,
+                GimmickType = (GimmickType)Properties.Settings.Default.KatSetGimmickType,
+
                 BarlineAmount = Properties.Settings.Default.KatSetBarAmount,
                 BarlineSpacing = Properties.Settings.Default.KatSetBarSpacing,
                 BarlineSVIncrease = Properties.Settings.Default.KatSetBarSVIncrease,
@@ -105,6 +121,8 @@ namespace TaikoBarlineHelper.Settings
             {
                 Note = TaikoNote.DonFinisher,
                 Enabled = Properties.Settings.Default.DonFinSetEnabled,
+                GimmickType = (GimmickType)Properties.Settings.Default.DonFinSetGimmickType,
+
                 BarlineAmount = Properties.Settings.Default.DonFinSetBarAmount,
                 BarlineSpacing = Properties.Settings.Default.DonFinSetBarSpacing,
                 BarlineSVIncrease = Properties.Settings.Default.DonFinSetBarSVIncrease,
@@ -113,6 +131,8 @@ namespace TaikoBarlineHelper.Settings
             {
                 Note = TaikoNote.KatFinisher,
                 Enabled = Properties.Settings.Default.KatFinSetEnabled,
+                GimmickType = (GimmickType)Properties.Settings.Default.KatFinSetGimmickType,
+
                 BarlineAmount = Properties.Settings.Default.KatFinSetBarAmount,
                 BarlineSpacing = Properties.Settings.Default.KatFinSetBarSpacing,
                 BarlineSVIncrease = Properties.Settings.Default.KatFinSetBarSVIncrease,
@@ -151,6 +171,7 @@ namespace TaikoBarlineHelper.Settings
             string noteName = GetNoteSettingName(caller);
 
             Properties.Settings.Default[$"{noteName}Enabled"] = caller.Enabled;
+            Properties.Settings.Default[$"{noteName}GimmickType"] = (int)caller.GimmickType;
             Properties.Settings.Default[$"{noteName}BarAmount"] = caller.BarlineAmount;
             Properties.Settings.Default[$"{noteName}BarSpacing"] = caller.BarlineSpacing;
             Properties.Settings.Default[$"{noteName}BarSVIncrease"] = caller.BarlineSVIncrease;
@@ -164,6 +185,8 @@ namespace TaikoBarlineHelper.Settings
     public class NoteSettings
     {
         bool _enabled = false;
+        GimmickType _gimmickType = GimmickType.Barline; 
+
         int _barlineAmount = 1;
         int _barlineSpacing = 1;
         decimal _barlineSVIncrease = 0;
@@ -180,6 +203,15 @@ namespace TaikoBarlineHelper.Settings
             set
             {
                 _enabled = value;
+                _onNoteValueChanged?.Invoke(this);
+            }
+        }
+        public GimmickType GimmickType
+        {
+            get => _gimmickType;
+            set
+            {
+                _gimmickType = value;
                 _onNoteValueChanged?.Invoke(this);
             }
         }
