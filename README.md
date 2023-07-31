@@ -5,9 +5,11 @@ A program to make some of osu!taiko mapping gimmicks easier to iterate on
 ### What it does
 - It can make Barlines yes
 
+- - - -
+
 ### How to use
-1. Make sure your hitobjects directly land on green lines in osu!editor <sup>1</sup>
-2. Copy the (green) lines you want to barline <sup>2</sup>
+1. Make sure your hitobjects directly land on green lines in osu!editor[^1]
+2. Copy the (green) lines you want to barline[^2]
 3. Paste those lines in the text field
 4. Select which notes you want to make barlines on by checking the boxes
 5. Configure what you want to do with each one of those
@@ -18,8 +20,9 @@ A program to make some of osu!taiko mapping gimmicks easier to iterate on
 8. Press "Oops" button to undo the changes
 9. Check "Is Tutorial" if you want notes to still be visible on top of the barlines.
 
-<sup>1</sup> <sub>The barlines will only be applied if the notes land directly on the green lines.</sub>  
-<sup>2</sup> <sub>These steps work like this for the time being, I'm already working on making them work more intuitively (~~but I only work on this when I'm actively using it to map something oops~~)</sub>
+
+[^1]: The barlines will only be applied if the notes land directly on the green lines.
+[^2]: These steps work like this for the time being, I'm already working on making them work more intuitively (~~but I only work on this when I'm actively using it to map something oops~~)
 
 - - - -
 
