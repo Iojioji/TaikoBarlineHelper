@@ -61,7 +61,7 @@
             label7 = new Label();
             KatNoteBarlineAmount = new NumericUpDown();
             KatNoteEnabled = new CheckBox();
-            comboBox3 = new ComboBox();
+            KatNoteGimmickType = new ComboBox();
             DonFinisherSettingsPanel = new Panel();
             DonFinisherNoteBarlinePanel = new Panel();
             label8 = new Label();
@@ -71,7 +71,7 @@
             label10 = new Label();
             DonFinisherNoteBarlineAmount = new NumericUpDown();
             DonFinisherNoteEnabled = new CheckBox();
-            comboBox5 = new ComboBox();
+            DonFinisherNoteGimmickType = new ComboBox();
             KatFinisherSettingsPanel = new Panel();
             KatFinisherNoteBarlinePanel = new Panel();
             label11 = new Label();
@@ -81,7 +81,7 @@
             label13 = new Label();
             KatFinisherNoteBarlineAmount = new NumericUpDown();
             KatFinisherNoteEnabled = new CheckBox();
-            comboBox7 = new ComboBox();
+            KatFinisherNoteGimmickType = new ComboBox();
             BarlineAmountTooltip = new ToolTip(components);
             BarlineSpacingTooltip = new ToolTip(components);
             BarlineSVIncreaseTooltip = new ToolTip(components);
@@ -344,24 +344,24 @@
             // DonNoteGimmickType
             // 
             DonNoteGimmickType.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            DonNoteGimmickType.Enabled = false;
+            DonNoteGimmickType.DropDownStyle = ComboBoxStyle.DropDownList;
             DonNoteGimmickType.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
             DonNoteGimmickType.FormattingEnabled = true;
             DonNoteGimmickType.ItemHeight = 11;
-            DonNoteGimmickType.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
+            DonNoteGimmickType.Items.AddRange(new object[] { "Barline", "Inv. Barline", "YellowNote" });
             DonNoteGimmickType.Location = new Point(74, 2);
             DonNoteGimmickType.Margin = new Padding(0, 3, 3, 3);
             DonNoteGimmickType.Name = "DonNoteGimmickType";
             DonNoteGimmickType.Size = new Size(71, 19);
             DonNoteGimmickType.TabIndex = 0;
-            DonNoteGimmickType.Text = "Barline";
+            DonNoteGimmickType.SelectedIndexChanged += GimmickTypeChanged;
             // 
             // KatSettingsPanel
             // 
             KatSettingsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             KatSettingsPanel.Controls.Add(KatNoteBarlinePanel);
             KatSettingsPanel.Controls.Add(KatNoteEnabled);
-            KatSettingsPanel.Controls.Add(comboBox3);
+            KatSettingsPanel.Controls.Add(KatNoteGimmickType);
             KatSettingsPanel.Location = new Point(153, 3);
             KatSettingsPanel.Margin = new Padding(0);
             KatSettingsPanel.Name = "KatSettingsPanel";
@@ -456,27 +456,27 @@
             KatNoteEnabled.UseVisualStyleBackColor = true;
             KatNoteEnabled.CheckedChanged += NoteEnabled_CheckedChanged;
             // 
-            // comboBox3
+            // KatNoteGimmickType
             // 
-            comboBox3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            comboBox3.Enabled = false;
-            comboBox3.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            comboBox3.FormattingEnabled = true;
-            comboBox3.ItemHeight = 11;
-            comboBox3.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
-            comboBox3.Location = new Point(74, 2);
-            comboBox3.Margin = new Padding(0, 3, 3, 3);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(72, 19);
-            comboBox3.TabIndex = 0;
-            comboBox3.Text = "Barline";
+            KatNoteGimmickType.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            KatNoteGimmickType.DropDownStyle = ComboBoxStyle.DropDownList;
+            KatNoteGimmickType.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
+            KatNoteGimmickType.FormattingEnabled = true;
+            KatNoteGimmickType.ItemHeight = 11;
+            KatNoteGimmickType.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
+            KatNoteGimmickType.Location = new Point(74, 2);
+            KatNoteGimmickType.Margin = new Padding(0, 3, 3, 3);
+            KatNoteGimmickType.Name = "KatNoteGimmickType";
+            KatNoteGimmickType.Size = new Size(72, 19);
+            KatNoteGimmickType.TabIndex = 0;
+            KatNoteGimmickType.SelectedIndexChanged += GimmickTypeChanged;
             // 
             // DonFinisherSettingsPanel
             // 
             DonFinisherSettingsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DonFinisherSettingsPanel.Controls.Add(DonFinisherNoteBarlinePanel);
             DonFinisherSettingsPanel.Controls.Add(DonFinisherNoteEnabled);
-            DonFinisherSettingsPanel.Controls.Add(comboBox5);
+            DonFinisherSettingsPanel.Controls.Add(DonFinisherNoteGimmickType);
             DonFinisherSettingsPanel.Location = new Point(3, 99);
             DonFinisherSettingsPanel.Margin = new Padding(0);
             DonFinisherSettingsPanel.Name = "DonFinisherSettingsPanel";
@@ -570,27 +570,27 @@
             DonFinisherNoteEnabled.UseVisualStyleBackColor = true;
             DonFinisherNoteEnabled.CheckedChanged += NoteEnabled_CheckedChanged;
             // 
-            // comboBox5
+            // DonFinisherNoteGimmickType
             // 
-            comboBox5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            comboBox5.Enabled = false;
-            comboBox5.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            comboBox5.FormattingEnabled = true;
-            comboBox5.ItemHeight = 11;
-            comboBox5.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
-            comboBox5.Location = new Point(74, 2);
-            comboBox5.Margin = new Padding(0, 3, 3, 3);
-            comboBox5.Name = "comboBox5";
-            comboBox5.Size = new Size(71, 19);
-            comboBox5.TabIndex = 0;
-            comboBox5.Text = "Barline";
+            DonFinisherNoteGimmickType.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            DonFinisherNoteGimmickType.DropDownStyle = ComboBoxStyle.DropDownList;
+            DonFinisherNoteGimmickType.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
+            DonFinisherNoteGimmickType.FormattingEnabled = true;
+            DonFinisherNoteGimmickType.ItemHeight = 11;
+            DonFinisherNoteGimmickType.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
+            DonFinisherNoteGimmickType.Location = new Point(74, 2);
+            DonFinisherNoteGimmickType.Margin = new Padding(0, 3, 3, 3);
+            DonFinisherNoteGimmickType.Name = "DonFinisherNoteGimmickType";
+            DonFinisherNoteGimmickType.Size = new Size(71, 19);
+            DonFinisherNoteGimmickType.TabIndex = 0;
+            DonFinisherNoteGimmickType.SelectedIndexChanged += GimmickTypeChanged;
             // 
             // KatFinisherSettingsPanel
             // 
             KatFinisherSettingsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             KatFinisherSettingsPanel.Controls.Add(KatFinisherNoteBarlinePanel);
             KatFinisherSettingsPanel.Controls.Add(KatFinisherNoteEnabled);
-            KatFinisherSettingsPanel.Controls.Add(comboBox7);
+            KatFinisherSettingsPanel.Controls.Add(KatFinisherNoteGimmickType);
             KatFinisherSettingsPanel.Location = new Point(153, 99);
             KatFinisherSettingsPanel.Margin = new Padding(0);
             KatFinisherSettingsPanel.Name = "KatFinisherSettingsPanel";
@@ -684,20 +684,20 @@
             KatFinisherNoteEnabled.UseVisualStyleBackColor = true;
             KatFinisherNoteEnabled.CheckedChanged += NoteEnabled_CheckedChanged;
             // 
-            // comboBox7
+            // KatFinisherNoteGimmickType
             // 
-            comboBox7.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            comboBox7.Enabled = false;
-            comboBox7.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            comboBox7.FormattingEnabled = true;
-            comboBox7.ItemHeight = 11;
-            comboBox7.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
-            comboBox7.Location = new Point(74, 2);
-            comboBox7.Margin = new Padding(0, 3, 3, 3);
-            comboBox7.Name = "comboBox7";
-            comboBox7.Size = new Size(72, 19);
-            comboBox7.TabIndex = 0;
-            comboBox7.Text = "Barline";
+            KatFinisherNoteGimmickType.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            KatFinisherNoteGimmickType.DropDownStyle = ComboBoxStyle.DropDownList;
+            KatFinisherNoteGimmickType.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
+            KatFinisherNoteGimmickType.FormattingEnabled = true;
+            KatFinisherNoteGimmickType.ItemHeight = 11;
+            KatFinisherNoteGimmickType.Items.AddRange(new object[] { "Barline", "Inv. Barline", "Slider" });
+            KatFinisherNoteGimmickType.Location = new Point(74, 2);
+            KatFinisherNoteGimmickType.Margin = new Padding(0, 3, 3, 3);
+            KatFinisherNoteGimmickType.Name = "KatFinisherNoteGimmickType";
+            KatFinisherNoteGimmickType.Size = new Size(72, 19);
+            KatFinisherNoteGimmickType.TabIndex = 0;
+            KatFinisherNoteGimmickType.SelectedIndexChanged += GimmickTypeChanged;
             // 
             // MainForm
             // 
@@ -776,7 +776,7 @@
         private ComboBox DonNoteGimmickType;
         private Panel KatSettingsPanel;
         private CheckBox KatNoteEnabled;
-        private ComboBox comboBox3;
+        private ComboBox KatNoteGimmickType;
         private Panel DonFinisherSettingsPanel;
         private Panel DonFinisherNoteBarlinePanel;
         private Label label8;
@@ -786,7 +786,7 @@
         private Label label10;
         private NumericUpDown DonFinisherNoteBarlineAmount;
         private CheckBox DonFinisherNoteEnabled;
-        private ComboBox comboBox5;
+        private ComboBox DonFinisherNoteGimmickType;
         private Panel KatFinisherSettingsPanel;
         private Panel KatFinisherNoteBarlinePanel;
         private Label label11;
@@ -796,7 +796,7 @@
         private Label label13;
         private NumericUpDown KatFinisherNoteBarlineAmount;
         private CheckBox KatFinisherNoteEnabled;
-        private ComboBox comboBox7;
+        private ComboBox KatFinisherNoteGimmickType;
         private Panel KatNoteBarlinePanel;
         private Label label5;
         private NumericUpDown KatNoteBarlineSVIncrease;

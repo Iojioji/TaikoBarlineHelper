@@ -12,7 +12,7 @@ using TaikoBarlineHelper.Gimmicks;
 
 namespace TaikoBarlineHelper
 {
-    public enum GimmickType { Barline = 0, Slider = 1 }
+    public enum GimmickType { Barline = 0, InverseBarline = 1, YellowNote = 2 }
     public enum TaikoNote { Don = 0, Kat = 1, DonFinisher = 2, KatFinisher = 3 }
     public partial class MainForm : Form
     {
@@ -31,7 +31,7 @@ namespace TaikoBarlineHelper
             set
             {
                 _applyDon = value;
-                UpdateBarlinePanelStatus(DonNoteBarlinePanel, _applyDon);
+                UpdateBarlinePanelStatus(DonNoteBarlinePanel, DonNoteGimmickType, _applyDon);
                 if (_updateSettingsOnNoteChange)
                     SettingsManager.DonSettings.Enabled = _applyDon;
             }
@@ -42,7 +42,7 @@ namespace TaikoBarlineHelper
             set
             {
                 _applyKat = value;
-                UpdateBarlinePanelStatus(KatNoteBarlinePanel, _applyKat);
+                UpdateBarlinePanelStatus(KatNoteBarlinePanel, KatNoteGimmickType, _applyKat);
                 if (_updateSettingsOnNoteChange)
                     SettingsManager.KatSettings.Enabled = _applyKat;
             }
@@ -53,7 +53,7 @@ namespace TaikoBarlineHelper
             set
             {
                 _applyDonFinisher = value;
-                UpdateBarlinePanelStatus(DonFinisherNoteBarlinePanel, _applyDonFinisher);
+                UpdateBarlinePanelStatus(DonFinisherNoteBarlinePanel, DonFinisherNoteGimmickType, _applyDonFinisher);
                 if (_updateSettingsOnNoteChange)
                     SettingsManager.DonFinSettings.Enabled = _applyDonFinisher;
             }
@@ -64,7 +64,7 @@ namespace TaikoBarlineHelper
             set
             {
                 _applyKatFinisher = value;
-                UpdateBarlinePanelStatus(KatFinisherNoteBarlinePanel, _applyKatFinisher);
+                UpdateBarlinePanelStatus(KatFinisherNoteBarlinePanel, KatFinisherNoteGimmickType, _applyKatFinisher);
                 if (_updateSettingsOnNoteChange)
                     SettingsManager.KatFinSettings.Enabled = _applyKatFinisher;
             }
@@ -88,15 +88,43 @@ namespace TaikoBarlineHelper
 
             _updateSettingsOnNoteChange = true;
 
+            if (!string.IsNullOrWhiteSpace(SettingsManager.LoadedMap))
+            {
+                if (File.Exists(SettingsManager.LoadedMap))
+                {
+                    RefreshMap();
+                }
+                else
+                {
+                    MessageBox.Show($"The map you had previously loaded is no longer on the saved directory!\r\n\r\n\"{SettingsManager.LoadedMap}\"", $"Map no longer exists!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    SettingsManager.LoadedMap = "";
+                }
+            }
+
             UpdateMakeBarlineButt();
+
+
+            FormClosing += OnClose;
+        }
+
+        private void OnClose(object? sender, FormClosingEventArgs e)
+        {
+            SettingsManager.LinesString = TimingPointTextBox.Text;
         }
 
         void LoadSavedNoteValues()
         {
+            TimingPointTextBox.Text = SettingsManager.LinesString;
+
             DonNoteEnabled.Checked = ApplyDon = SettingsManager.DonSettings.Enabled;
             KatNoteEnabled.Checked = ApplyKat = SettingsManager.KatSettings.Enabled;
             DonFinisherNoteEnabled.Checked = ApplyDonFinisher = SettingsManager.DonFinSettings.Enabled;
             KatFinisherNoteEnabled.Checked = ApplyKatFinisher = SettingsManager.KatFinSettings.Enabled;
+
+            DonNoteGimmickType.SelectedIndex = (int)SettingsManager.DonSettings.GimmickType;
+            KatNoteGimmickType.SelectedIndex = (int)SettingsManager.KatSettings.GimmickType;
+            DonFinisherNoteGimmickType.SelectedIndex = (int)SettingsManager.DonFinSettings.GimmickType;
+            KatFinisherNoteGimmickType.SelectedIndex = (int)SettingsManager.KatFinSettings.GimmickType;
 
             DonNoteBarlineAmount.Value = SettingsManager.DonSettings.BarlineAmount;
             KatNoteBarlineAmount.Value = SettingsManager.KatSettings.BarlineAmount;
@@ -158,8 +186,9 @@ namespace TaikoBarlineHelper
             LoadedMapTooltip.SetToolTip(LoadedMapLabel_Diff, $"Loaded Map: {name} - {diff}");
         }
 
-        void UpdateBarlinePanelStatus(Panel toChange, bool enabled)
+        void UpdateBarlinePanelStatus(Panel toChange, ComboBox toChangeType, bool enabled)
         {
+            toChangeType.Enabled = enabled;
             toChange.Enabled = enabled;
         }
         void UpdateMakeBarlineButt()
@@ -235,7 +264,7 @@ namespace TaikoBarlineHelper
         /// </summary>
         /// <param name="lines"></param>
 
-        (int, int) GetPoints(string[] lines)
+        (int, int) GetPoints(List<string> lines)
         {
             (int, int) result = (-9999, -9999);
 
@@ -281,7 +310,7 @@ namespace TaikoBarlineHelper
 
         private void MakeBarlineBut_Click(object sender, EventArgs e)
         {
-            string[] lines = TimingPointTextBox.Text.Split('\n');
+            List<string> lines = TrimEmptyLines(TimingPointTextBox.Text.Split('\n'));
 
             //TestReadLines(lines);
 
@@ -312,6 +341,19 @@ namespace TaikoBarlineHelper
             ///Debug.WriteLine($"Saving Map!");
             ///_loadedBeatmap.Save(SettingsManager.LoadedMap);
         }
+        List<string> TrimEmptyLines(string[] toTrim)
+        {
+            List<string> trimmedLines = new List<string>();
+
+            foreach (string line in toTrim)
+            {
+                if (!string.IsNullOrWhiteSpace(line)) 
+                    trimmedLines.Add(line);
+            }
+
+            return trimmedLines;
+        }
+
         private void OopsButt_Click(object sender, EventArgs e)
         {
             if (_gimmickHandler.BackupMap != null)
@@ -348,6 +390,44 @@ namespace TaikoBarlineHelper
                 case ("KatFinisherNoteEnabled"):
                     ApplyKatFinisher = isChecked;
                     break;
+            }
+        }
+        private void GimmickTypeChanged(object sender, EventArgs e)
+        {
+            if (!_updateSettingsOnNoteChange) return;
+
+            ComboBox comboBox = (ComboBox)sender;
+            string name = (comboBox).Name;
+
+            if (comboBox.SelectedIndex != 0)
+            {
+                comboBox.SelectedIndex = 0;
+                MessageBox.Show($"Those other settings are not done yet, sorry!");
+                return;
+            }
+
+
+            if (name.Contains("Don"))
+            {
+                if (name.Contains("DonFinisher"))
+                {
+                    SettingsManager.DonFinSettings.GimmickType = (GimmickType)DonFinisherNoteGimmickType.SelectedIndex;
+                }
+                else
+                {
+                    SettingsManager.DonSettings.GimmickType = (GimmickType)DonNoteGimmickType.SelectedIndex;
+                }
+            }
+            else
+            {
+                if (name.Contains("KatFinisher"))
+                {
+                    SettingsManager.KatFinSettings.GimmickType = (GimmickType)KatFinisherNoteGimmickType.SelectedIndex;
+                }
+                else
+                {
+                    SettingsManager.KatSettings.GimmickType = (GimmickType)KatNoteGimmickType.SelectedIndex;
+                }
             }
         }
         private void IsTutorial_CheckedChanged(object sender, EventArgs e)
@@ -397,13 +477,13 @@ namespace TaikoBarlineHelper
                 }
             }
 
-            Debug.WriteLine($"Don Finisher? {(name.Contains("DonFinisher") ? true : false)}");
+            //Debug.WriteLine($"Don Finisher? {(name.Contains("DonFinisher") ? true : false)}");
         }
+
         private void TimingPointTextBox_TextChanged(object sender, EventArgs e)
         {
             UpdateMakeBarlineButt();
         }
         #endregion
-
     }
 }
