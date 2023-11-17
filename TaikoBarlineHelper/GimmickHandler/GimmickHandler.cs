@@ -21,6 +21,11 @@ namespace TaikoBarlineHelper.Gimmicks
         public Beatmap LoadedBeatmap { get => _loadedBeatmap; set => _loadedBeatmap = value; }
         public Beatmap BackupMap { get => _backupMap; set => _backupMap = value; }
 
+        public void MakeGimmick((int, int) points)
+        {
+
+        }
+        [Obsolete]
         public void MakeGimmick(string[] lines)
         {
             if (_loadedBeatmap == null)
@@ -41,7 +46,7 @@ namespace TaikoBarlineHelper.Gimmicks
 
         public void RevertChanges()
         {
-            _backupMap.Save(SettingsManager.LoadedMap);
+            _backupMap?.Save(SettingsManager.LoadedMap);
             _backupMap = null;
             _backupTimingPoints.Clear();
         }

@@ -228,32 +228,68 @@ namespace TaikoBarlineHelper
             }
         }
 
-        void TestReadLines(string[] lines)
+        /// <summary>
+        /// TODO: How should this work? Should you add the timing points to affect the thing? Just the notes? Individual timing points????
+        /// If TimingPoint, from earliest point to latest point
+        /// If HitObject, from earliest object to latest object
+        /// </summary>
+        /// <param name="lines"></param>
+
+        (int, int) GetPoints(string[] lines)
         {
-            //Trim lines
-            List<string> auxLines = new List<string>();
+            (int, int) result = (-9999, -9999);
 
             foreach (string line in lines)
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    auxLines.Add(line);
+                    if (line.Contains(':'))
+                    {
+                        //TODO: Handle HitObject
+                    }
+                    else
+                    {
+                        int offset = -999;
+                        int.TryParse(line.Split(',')[0], out offset);
+                        if (offset != -999)
+                        {
+                            if (result.Item1 == -9999)
+                            {
+                                result.Item1 = offset;
+                            }
+                            else
+                            {
+                                result.Item1 = offset < result.Item1 ? offset : result.Item1;
+                            }
+
+
+                            if (result.Item2 == -9999)
+                            {
+                                result.Item2 = offset;
+                            }
+                            else
+                            {
+                                result.Item2 = offset > result.Item2 ? offset : result.Item2;
+                            }
+                        }
+                    }
                 }
             }
 
-
+            return result;
         }
 
         private void MakeBarlineBut_Click(object sender, EventArgs e)
         {
             string[] lines = TimingPointTextBox.Text.Split('\n');
 
-            TestReadLines(lines);
+            //TestReadLines(lines);
 
-            return;
+            //return;
 
             RefreshMap();
-            _gimmickHandler.MakeGimmick(lines);
+            //_gimmickHandler.MakeGimmick(lines);
+            _gimmickHandler.MakeGimmick(GetPoints(lines));
 
             if (_gimmickHandler.BackupMap != null)
                 OopsButt.Enabled = true;
