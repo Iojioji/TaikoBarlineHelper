@@ -22,10 +22,24 @@ namespace TaikoBarlineHelper.Gimmicks
         public Beatmap LoadedBeatmap { get => _loadedBeatmap; set => _loadedBeatmap = value; }
         public Beatmap BackupMap { get => _backupMap; set => _backupMap = value; }
 
-        public void MakeGimmick((int, int) points)
+        public void MakeGimmick((int min, int max) points)
         {
+            if (_loadedBeatmap == null) return;
 
+            List<(TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine)> noteList = GetObjects(points);
+
+            if (noteList.Count == 0) return;
+
+            _backupMap = CloneBeatmap(_loadedBeatmap);
+
+            foreach ((TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine) obj in noteList)
+            {
+
+            }
+
+            _loadedBeatmap.Save(SettingsManager.LoadedMap);
         }
+
         [Obsolete]
         public void MakeGimmick(List<string> lines)
         {
@@ -87,6 +101,39 @@ namespace TaikoBarlineHelper.Gimmicks
             return beatmap;
         }
 
+        List<(TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine)> GetObjects((int min, int max) points)
+        {
+            List<(TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine)> results = new List<(TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine)>();
+
+            foreach (HitObject hitObject in _loadedBeatmap.HitObjects)
+            {
+                if (hitObject.StartTime < points.min) continue;
+                if (hitObject.StartTime > points.max) break;
+
+                HitObject auxObject = hitObject;
+                TimingPoint greenLine = null;
+                TimingPoint redline = null;
+
+                List<TimingPoint> testPoints = _loadedBeatmap.TimingPoints.FindAll(x => x.Offset <= auxObject.StartTime).OrderByDescending(x => x.Offset).ToList();
+
+                foreach (TimingPoint timingPoint in testPoints)
+                {
+                    if (timingPoint.BeatLength > 0)
+                    {
+                        //RedLine
+
+                    }
+                    else
+                    {
+                        //GreenLine
+                    }
+                    //greenLine = greenLine == null ? ti
+                }
+            }
+
+            return results;
+        }
+
         /// <summary>
         /// Cleans the lines to keep only affectable elements
         /// </summary>
@@ -96,7 +143,7 @@ namespace TaikoBarlineHelper.Gimmicks
         {
             (TaikoObjectType type, List<string> lines) result = (TaikoObjectType.None, new List<string>());
             //List<(TaikoObjectType type, string line)> cleanedLines = new List<(TaikoObjectType type, string line)>();
-            
+
             int index = 0;
             //TaikoObjectType currentObjectType = TaikoObjectType.None;
             Debug.WriteLine($"Checking {lines.Count} lines!");

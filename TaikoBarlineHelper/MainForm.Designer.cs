@@ -147,7 +147,7 @@
             TimingPointTextBox.Name = "TimingPointTextBox";
             TimingPointTextBox.Size = new Size(304, 107);
             TimingPointTextBox.TabIndex = 1;
-            TimingPointTextBox.Text = "";
+            TimingPointTextBox.Text = "10284,-133.33333,4,1,0,80,0,0\n11142,-133.33333,4,1,0,80,0,0";
             TimingPointTextBox.TextChanged += TimingPointTextBox_TextChanged;
             // 
             // label1

@@ -282,24 +282,8 @@ namespace TaikoBarlineHelper
                         int.TryParse(line.Split(',')[0], out offset);
                         if (offset != -999)
                         {
-                            if (result.Item1 == -9999)
-                            {
-                                result.Item1 = offset;
-                            }
-                            else
-                            {
-                                result.Item1 = offset < result.Item1 ? offset : result.Item1;
-                            }
-
-
-                            if (result.Item2 == -9999)
-                            {
-                                result.Item2 = offset;
-                            }
-                            else
-                            {
-                                result.Item2 = offset > result.Item2 ? offset : result.Item2;
-                            }
+                            result.Item1 = result.Item1 == -9999 ? offset : offset < result.Item1 ? offset : result.Item1;
+                            result.Item2 = result.Item2 == -9999 ? offset : offset > result.Item2 ? offset : result.Item2;
                         }
                     }
                 }
@@ -347,7 +331,7 @@ namespace TaikoBarlineHelper
 
             foreach (string line in toTrim)
             {
-                if (!string.IsNullOrWhiteSpace(line)) 
+                if (!string.IsNullOrWhiteSpace(line))
                     trimmedLines.Add(line);
             }
 
