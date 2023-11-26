@@ -9,6 +9,8 @@ using System.Diagnostics;
 using TaikoBarlineHelper.Settings;
 using OsuParsers.Beatmaps.Objects.Taiko;
 using OsuParsers.Enums.Beatmaps;
+using System.Windows.Controls;
+using System.Xml;
 
 namespace TaikoBarlineHelper.Gimmicks
 {
@@ -34,7 +36,8 @@ namespace TaikoBarlineHelper.Gimmicks
 
             foreach ((TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine) obj in noteList)
             {
-
+                //TODO: Do different gimimck depending on dropDown selection
+                GenerateBarline(obj.hitObject, obj.redLine, obj.greenLine);
             }
 
             _loadedBeatmap.Save(SettingsManager.LoadedMap);
@@ -105,30 +108,32 @@ namespace TaikoBarlineHelper.Gimmicks
         {
             List<(TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine)> results = new List<(TaikoHit hitObject, TimingPoint? greenLine, TimingPoint redLine)>();
 
-            foreach (HitObject hitObject in _loadedBeatmap.HitObjects)
+            if (_loadedBeatmap.TimingPoints.Count == 0) return results;
+
+            foreach (TaikoHit hitObject in _loadedBeatmap.HitObjects)
             {
                 if (hitObject.StartTime < points.min) continue;
                 if (hitObject.StartTime > points.max) break;
 
                 HitObject auxObject = hitObject;
-                TimingPoint greenLine = null;
-                TimingPoint redline = null;
+                TimingPoint? greenLine = null;
+                TimingPoint? redLine = null;
 
-                List<TimingPoint> testPoints = _loadedBeatmap.TimingPoints.FindAll(x => x.Offset <= auxObject.StartTime).OrderByDescending(x => x.Offset).ToList();
+                List<TimingPoint> testPoints = _loadedBeatmap.TimingPoints.FindAll(x => x.Offset <= auxObject.StartTime);
+                List<TimingPoint> greenPoints = testPoints.FindAll(x => x.BeatLength < 0).OrderByDescending(x => x.Offset).ToList();
+                List<TimingPoint> redPoints = testPoints.FindAll(x => x.BeatLength > 0).OrderByDescending(x => x.Offset).ToList();
 
-                foreach (TimingPoint timingPoint in testPoints)
+                redLine = redPoints.Count > 0 ? redPoints[0] : null;
+
+                foreach (TimingPoint timingPoint in greenPoints)
                 {
-                    if (timingPoint.BeatLength > 0)
-                    {
-                        //RedLine
-
-                    }
-                    else
-                    {
-                        //GreenLine
-                    }
-                    //greenLine = greenLine == null ? ti
+                    if (timingPoint.Offset < redLine?.Offset) break;
+                    greenLine = timingPoint;
+                    if (greenLine != null) break;
                 }
+                greenLine = greenLine == null ? redLine : greenLine;
+
+                results.Add((hitObject, greenLine, redLine));
             }
 
             return results;
@@ -258,6 +263,7 @@ namespace TaikoBarlineHelper.Gimmicks
             GenerateBarlines(currentPoint, lastRedline);
             Debug.WriteLine($"TP {currentPoint.Offset} -> {barlineMS}\r\n  SV: {currentPoint.BeatLength}\r\n");
         }
+        [Obsolete]
         TaikoHit GetNoteInOffset(int offset)
         {
             TaikoHit hitObject = null;
@@ -307,6 +313,102 @@ namespace TaikoBarlineHelper.Gimmicks
             return result;
         }
 
+        void GenerateBarline(TaikoHit hit, TimingPoint redLine, TimingPoint? greenLine)
+        {
+            if (redLine == null)
+            {
+                //TODO: uuuh, no previous redline wtf
+                return;
+            }
+
+            Debug.WriteLine($"Generating barline:\r\n   Offset: {hit.StartTime}, red: ({redLine.Offset}, {redLine.BeatLength}), green: ({(greenLine == null ? "Null" : $"{greenLine.Offset}, {greenLine.BeatLength}")})");
+            double svValue = greenLine != null ? -100 / greenLine.BeatLength : 1f;
+            double bpm = 60000 / redLine.BeatLength;
+            int originalOffset = hit.StartTime;
+
+            bool isKiai = greenLine != null ? ((int)greenLine.Effects == 9 || greenLine.Effects == Effects.Kiai) : (int)redLine.Effects == 9 || redLine.Effects == Effects.Kiai;
+
+            if (greenLine == null)
+            {
+                //greenLine = redLine;
+                //greenLine.BeatLength = -100;
+                greenLine = new TimingPoint()
+                {
+                    Offset = -1,
+                    BeatLength = -100 / svValue,
+                    TimeSignature = redLine.TimeSignature,
+                    SampleSet = redLine.SampleSet,
+                    CustomSampleSet = redLine.CustomSampleSet,
+                    Volume = redLine.Volume,
+                    Inherited = true,
+                    Effects = redLine.Effects
+                };
+            }
+
+            if (!ShouldAddBarline(hit))
+            {
+                return;
+            }
+
+            NoteSettings noteSettings = GetNoteSettings(hit.Color, hit.IsBig);
+
+            if (!SettingsManager.IsTutorial)
+            {
+                GenerateBarline(hit.StartTime, 100000, 10, redLine.TimeSignature, redLine.SampleSet, redLine.CustomSampleSet, redLine.Volume, isKiai, true);
+            }
+            //GenerateBarline(hit.StartTime, bpm, isKiai, noteSettings.BarlineAmount, noteSettings.BarlineSpacing, (double)noteSettings.BarlineSVIncrease);
+            for (int i = 0; i < noteSettings.BarlineAmount; i++)
+            {
+                int barOffset = 1 + (i * noteSettings.BarlineSpacing);
+                double svOffset = (i * (double)noteSettings.BarlineSVIncrease);
+
+                GenerateBarline(hit.StartTime + barOffset, bpm, svValue + svOffset, greenLine.TimeSignature, greenLine.SampleSet, greenLine.CustomSampleSet, greenLine.Volume, isKiai, false);
+                GenerateBarline(hit.StartTime - barOffset, bpm, svValue - svOffset, greenLine.TimeSignature, greenLine.SampleSet, greenLine.CustomSampleSet, greenLine.Volume, isKiai, false);
+            }
+            
+            if (!SettingsManager.IsTutorial)
+            {
+                //TODO: Remove greenLine?
+                TimingPoint? timingPoint = _loadedBeatmap.TimingPoints.Find(x => x.BeatLength < 0 && x.Offset == hit.StartTime);
+                if (timingPoint != null)
+                {
+                    _loadedBeatmap.TimingPoints.Remove(timingPoint);
+                }
+            }
+            _loadedBeatmap.TimingPoints = _loadedBeatmap.TimingPoints.OrderBy(x => x.Offset).ToList();
+        }
+
+        NoteSettings GetNoteSettings(TaikoColor color, bool bigNote)
+        {
+            NoteSettings settings;
+
+            if (bigNote)
+            {
+                if (color == TaikoColor.Blue)
+                {
+                    settings = SettingsManager.KatFinSettings;
+                }
+                else
+                {
+                    settings = SettingsManager.DonFinSettings;
+                }
+            }
+            else
+            {
+                if (color == TaikoColor.Blue)
+                {
+                    settings = SettingsManager.KatSettings;
+                }
+                else
+                {
+                    settings = SettingsManager.DonSettings;
+                }
+            }
+
+            return settings;
+        }
+
+        [Obsolete]
         void GenerateBarlines(TimingPoint origin, TimingPoint lastRedline)
         {
             if (origin == null)
@@ -378,6 +480,7 @@ namespace TaikoBarlineHelper.Gimmicks
 
             //_loadedBeatmap.Save(SettingsManager.LoadedMap);
         }
+        [Obsolete]
         void GenerateBarlines(TimingPoint origin, double bpm, bool isKiai, int extraBarlines, int offsetIncrease, double svIncrease)
         {
             double svValue = -100 / origin.BeatLength;
